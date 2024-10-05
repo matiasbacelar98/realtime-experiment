@@ -1,9 +1,12 @@
-import { Theme } from '@radix-ui/themes';
+import { Theme, Container } from '@radix-ui/themes';
+import PostsPage from './components/PostsPage';
 
 export default function App() {
   return (
     <Theme accentColor='indigo'>
-      <h1>Working..</h1>
+      <Container size='2' py='4' px='2' align='left'>
+        <PostsPage />
+      </Container>
     </Theme>
   );
 }
