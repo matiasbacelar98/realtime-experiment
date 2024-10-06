@@ -1,9 +1,11 @@
-import express from 'express';
 import { createServer } from 'http';
+
+import express from 'express';
+
 import { Server, Socket } from 'socket.io';
 import { faker } from '@faker-js/faker';
 
-const PORT = process.env.PORT || '5000';
+const PORT = 5000;
 
 /** Server setup */
 const app = express();
@@ -19,7 +21,9 @@ app.use(router);
 /** Socket IO */
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  // Options...
+  cors: {
+    origin: 'http://localhost:5173',
+  },
 });
 
 let interval: ReturnType<typeof setInterval>;
@@ -29,7 +33,7 @@ io.on('connection', socket => {
 
   if (interval) clearInterval(interval);
 
-  interval = setInterval(() => emitPost(socket), 500);
+  interval = setInterval(() => emitPost(socket), 2000);
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');
@@ -39,10 +43,10 @@ io.on('connection', socket => {
 
 function emitPost(socket: Socket) {
   const post = faker.lorem.lines(1);
-  socket.emit(post);
+  socket.emit('POSTS', post);
 }
 
 /** Run server */
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

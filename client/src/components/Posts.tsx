@@ -1,32 +1,22 @@
 import { Flex, Text, Card, Box } from '@radix-ui/themes';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
-export default function Posts() {
+type Props = {
+  posts: string[];
+};
+
+export default function Posts({ posts }: Props) {
+  const [parent] = useAutoAnimate();
+
   return (
-    <Flex direction='column' justify='center' gapY='4'>
-      <Box maxWidth='500px'>
-        <Card>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ipsam
-            cumque unde tempora, debitis quaerat quam.
-          </Text>
-        </Card>
-      </Box>
-      <Box maxWidth='500px'>
-        <Card>
-          <Text>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reiciendis
-            porro rerum commodi doloribus, nemo reprehenderit!
-          </Text>
-        </Card>
-      </Box>
-      <Box maxWidth='500px'>
-        <Card>
-          <Text>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid,
-            maxime! Voluptates ducimus voluptatem sed veritatis!
-          </Text>
-        </Card>
-      </Box>
+    <Flex direction='column' justify='center' gapY='4' ref={parent}>
+      {posts.map(post => (
+        <Box maxWidth='500px' key={post}>
+          <Card>
+            <Text>{post}</Text>
+          </Card>
+        </Box>
+      ))}
     </Flex>
   );
 }
