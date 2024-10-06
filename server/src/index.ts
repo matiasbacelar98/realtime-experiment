@@ -33,7 +33,11 @@ io.on('connection', socket => {
 
   if (interval) clearInterval(interval);
 
-  interval = setInterval(() => emitPost(socket), 2000);
+  interval = setInterval(() => emitPost(socket, 'server'), 2500);
+
+  socket.on('POST MSG', msg => {
+    emitPost(socket, 'client', msg);
+  });
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');
@@ -41,9 +45,10 @@ io.on('connection', socket => {
   });
 });
 
-function emitPost(socket: Socket) {
-  const post = faker.lorem.lines(1);
-  socket.emit('POSTS', post);
+function emitPost(socket: Socket, type: 'server' | 'client', postMsg?: string) {
+  const msg = postMsg || faker.lorem.lines(1);
+  const id = faker.string.uuid();
+  socket.emit('POSTS', { id, msg: msg, type });
 }
 
 /** Run server */
