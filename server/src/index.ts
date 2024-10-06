@@ -2,10 +2,12 @@ import { createServer } from 'http';
 
 import express from 'express';
 
+import 'dotenv/config';
+
 import { Server, Socket } from 'socket.io';
 import { faker } from '@faker-js/faker';
 
-const PORT = 5000;
+const PORT = process.env.PORT || '5000';
 
 /** Server setup */
 const app = express();
@@ -22,7 +24,7 @@ app.use(router);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: process.env.ALLOWED_DOMAIN || 'http://localhost:5173',
   },
 });
 
