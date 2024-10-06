@@ -1,16 +1,46 @@
 import express from 'express';
-// import socketIO from 'socket.io';
+import { createServer } from 'http';
+import { Server, Socket } from 'socket.io';
+import { faker } from '@faker-js/faker';
 
-/** Constants */
 const PORT = process.env.PORT || '5000';
 
 /** Server setup */
 const app = express();
 
+/** Router */
 const router = express.Router();
 router.get('/', (req, res) => {
+  console.log(faker.lorem.lines(1));
   res.send({ response: 'I am alive' }).status(200);
 });
+app.use(router);
+
+/** Socket IO */
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  // Options...
+});
+
+let interval: ReturnType<typeof setInterval>;
+
+io.on('connection', socket => {
+  console.log('New client connected');
+
+  if (interval) clearInterval(interval);
+
+  interval = setInterval(() => emitPost(socket), 500);
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+    clearInterval(interval);
+  });
+});
+
+function emitPost(socket: Socket) {
+  const post = faker.lorem.lines(1);
+  socket.emit(post);
+}
 
 /** Run server */
 app.listen(PORT, () => {
